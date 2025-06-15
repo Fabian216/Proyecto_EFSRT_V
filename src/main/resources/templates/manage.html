@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Gestión de Usuarios</title>
+</head>
+<body>
+<h2>Lista de Usuarios</h2>
+
+<div th:if="${error}">
+  <p th:text="${error}" style="color:red;"></p>
+</div>
+
+<table border="1">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Nombres</th>
+    <th>Apellidos</th>
+    <th>Rol</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="usuario : ${users}">
+    <td th:text="${usuario.id}"></td>
+    <td th:text="${usuario.firstName}"></td>
+    <td th:text="${usuario.lastName}"></td>
+    <td th:text="${usuario.userRole}"></td>
+  </tr>
+  </tbody>
+</table>
+
+<a th:href="@{/logout}">Cerrar sesión</a>
+
+</body>
+</html>
