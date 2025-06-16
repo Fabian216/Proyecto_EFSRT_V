@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Editar Usuario</title>
+</head>
+<body>
+
+<h2>Editar Usuario</h2>
+
+<div th:if="${error}">
+  <p th:text="${error}" style="color:red;"></p>
+</div>
+
+<form th:action="@{/manage/edit/{id}(id=${usuario.id})}" method="post">
+  <input type="hidden" name="id" th:value="${usuario.id}" />
+
+  <label>Nombre de Usuario:</label>
+  <input type="text" name="userName" th:value="${usuario.userName}" required/><br/>
+
+  <label>Contraseña (dejar vacío si no se cambia):</label>
+  <input type="password" name="passwordHash" /><br/>
+
+  <label>Nombres:</label>
+  <input type="text" name="firstName" th:value="${usuario.firstName}" required/><br/>
+
+  <label>Apellidos:</label>
+  <input type="text" name="lastName" th:value="${usuario.lastName}" required/><br/>
+
+  <label>Rol:</label>
+  <select name="userRole">
+    <option value="ADMIN" th:selected="${usuario.userRole == 'ADMIN'}">ADMIN</option>
+    <option value="OPERATOR" th:selected="${usuario.userRole == 'OPERATOR'}">OPERATOR</option>
+  </select><br/>
+
+  <button type="submit">Guardar Cambios</button>
+</form>
+
+<br/>
+<a th:href="@{/manage/start}">Volver al listado</a>
+
+</body>
+</html>

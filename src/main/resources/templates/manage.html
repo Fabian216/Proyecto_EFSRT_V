@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
   <title>Gestión de Usuarios</title>
+  <meta charset="UTF-8">
 </head>
 <body>
+
 <h2>Lista de Usuarios</h2>
 
 <div th:if="${error}">
@@ -14,20 +16,33 @@
   <thead>
   <tr>
     <th>ID</th>
+    <th>Usuario</th>
     <th>Nombres</th>
     <th>Apellidos</th>
     <th>Rol</th>
+    <th>Acciones</th>
   </tr>
   </thead>
   <tbody>
   <tr th:each="usuario : ${users}">
-    <td th:text="${usuario.id}"></td>
     <td th:text="${usuario.firstName}"></td>
     <td th:text="${usuario.lastName}"></td>
     <td th:text="${usuario.userRole}"></td>
+    <td>
+      <a th:href="@{/manage/edit/{id}(id=${usuario.id})}">Editar</a>
+      |
+      <form th:action="@{/manage/delete/{id}(id=${usuario.id})}" method="post" style="display:inline;">
+        <button type="submit" onclick="return confirm('¿Eliminar usuario?')">Eliminar</button>
+      </form>
+    </td>
   </tr>
   </tbody>
 </table>
+
+<br/>
+<div sec:authorize="hasRole('ADMIN')">
+  <a th:href="@{/manage/create}">Crear nuevo usuario</a> |
+</div>
 
 <a th:href="@{/logout}">Cerrar sesión</a>
 
