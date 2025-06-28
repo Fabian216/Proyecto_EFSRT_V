@@ -1,6 +1,7 @@
 package grupo08.proyecto_efsrtv.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lowagie.text.pdf.PdfPTable;
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
@@ -14,8 +15,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -84,31 +83,31 @@ public class UsuarioController {
         List<UsuarioDto> users = usuarioService.getAllUsers();
 
         response.setCharacterEncoding("UTF-8");
-        response.setHeader("Content-Disposition", "attachment; filename=usuarios." + format);
+        response.setHeader("Content-Disposition", "attachment; filename=Usuarios." + format);
 
         switch (format) {
             case "csv":
                 response.setContentType("text/csv");
-                exportToCSV(users, response.getWriter());
+                exportACSV(users, response.getWriter());
                 break;
             case "json":
                 response.setContentType("application/json");
-                exportToJSON(users, response.getWriter());
+                exportAJSON(users, response.getWriter());
                 break;
             case "txt":
                 response.setContentType("text/plain");
-                exportToTXT(users, response.getWriter());
+                exportarATXT(users, response.getWriter());
                 break;
             case "pdf":
                 response.setContentType("application/pdf");
-                exportToPDF(users, response.getOutputStream());
+                exportarAPdf(users, response.getOutputStream());
                 break;
             default:
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Formato no soportado");
         }
     }
 
-    private void exportToPDF(List<UsuarioDto> users, ServletOutputStream outputStream) throws IOException {
+    private void exportarAPdf(List<UsuarioDto> users, ServletOutputStream outputStream) throws IOException {
         try {
             com.lowagie.text.Document document = new com.lowagie.text.Document();
             com.lowagie.text.pdf.PdfWriter.getInstance(document, outputStream);
@@ -117,23 +116,7 @@ public class UsuarioController {
             document.add(new com.lowagie.text.Paragraph("Lista de Usuarios"));
             document.add(new com.lowagie.text.Paragraph(" ")); // blank line
 
-            com.lowagie.text.pdf.PdfPTable table = new com.lowagie.text.pdf.PdfPTable(5); // 5 columns
-
-            // Add table headers
-            table.addCell("ID");
-            table.addCell("Usuario");
-            table.addCell("Nombres");
-            table.addCell("Apellidos");
-            table.addCell("Rol");
-
-            // Add user data
-            for (UsuarioDto user : users) {
-                table.addCell(String.valueOf(user.id()));
-                table.addCell(user.userName());
-                table.addCell(user.firstName());
-                table.addCell(user.lastName());
-                table.addCell(user.userRole());
-            }
+            PdfPTable table = getPdfPTabla(users);
 
             document.add(table);
             document.close();
@@ -142,7 +125,28 @@ public class UsuarioController {
         }
     }
 
-    private void exportToTXT(List<UsuarioDto> users, PrintWriter writer) throws IOException {
+    private static PdfPTable getPdfPTabla(List<UsuarioDto> users) {
+        PdfPTable table = new PdfPTable(5); // 5 columns
+
+        // Add table headers
+        table.addCell("ID");
+        table.addCell("Usuario");
+        table.addCell("Nombres");
+        table.addCell("Apellidos");
+        table.addCell("Rol");
+
+        // Add user data
+        for (UsuarioDto user : users) {
+            table.addCell(String.valueOf(user.id()));
+            table.addCell(user.userName());
+            table.addCell(user.firstName());
+            table.addCell(user.lastName());
+            table.addCell(user.userRole());
+        }
+        return table;
+    }
+
+    private void exportarATXT(List<UsuarioDto> users, PrintWriter writer) throws IOException {
         for (UsuarioDto user : users) {
             writer.write("ID: " + user.id() + "\n");
             writer.write("Usuario: " + user.userName() + "\n");
@@ -153,12 +157,12 @@ public class UsuarioController {
         }
     }
 
-    private void exportToJSON(List<UsuarioDto> users, PrintWriter writer) throws IOException {
+    private void exportAJSON(List<UsuarioDto> users, PrintWriter writer) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         writer.write(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(users));
     }
 
-    private void exportToCSV(List<UsuarioDto> users, PrintWriter writer) throws IOException {
+    private void exportACSV(List<UsuarioDto> users, PrintWriter writer) throws IOException {
         StatefulBeanToCsv<UsuarioDto> beanToCsv = new StatefulBeanToCsvBuilder<UsuarioDto>(writer)
                 .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
                 .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
