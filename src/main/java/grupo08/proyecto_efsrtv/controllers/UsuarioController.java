@@ -1,10 +1,16 @@
 package grupo08.proyecto_efsrtv.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.opencsv.CSVWriter;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import grupo08.proyecto_efsrtv.dto.UsuarioDetDto;
 import grupo08.proyecto_efsrtv.dto.UsuarioDto;
 import grupo08.proyecto_efsrtv.models.Usuario;
 import grupo08.proyecto_efsrtv.repositories.IUsuarioRepository;
 import grupo08.proyecto_efsrtv.service.IUsuarioService;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +22,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,6 +79,99 @@ public class UsuarioController {
             return "redirect:/manage/restricted";  // Redirigir si no se encuentra el usuario
         }
     }
+    @GetMapping("/export")
+    public void exportUsers(@RequestParam String format, HttpServletResponse response) throws IOException {
+        List<UsuarioDto> users = usuarioService.getAllUsers();
+
+        response.setCharacterEncoding("UTF-8");
+        response.setHeader("Content-Disposition", "attachment; filename=usuarios." + format);
+
+        switch (format) {
+            case "csv":
+                response.setContentType("text/csv");
+                exportToCSV(users, response.getWriter());
+                break;
+            case "json":
+                response.setContentType("application/json");
+                exportToJSON(users, response.getWriter());
+                break;
+            case "txt":
+                response.setContentType("text/plain");
+                exportToTXT(users, response.getWriter());
+                break;
+            case "pdf":
+                response.setContentType("application/pdf");
+                exportToPDF(users, response.getOutputStream());
+                break;
+            default:
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Formato no soportado");
+        }
+    }
+
+    private void exportToPDF(List<UsuarioDto> users, ServletOutputStream outputStream) throws IOException {
+        try {
+            com.lowagie.text.Document document = new com.lowagie.text.Document();
+            com.lowagie.text.pdf.PdfWriter.getInstance(document, outputStream);
+            document.open();
+
+            document.add(new com.lowagie.text.Paragraph("Lista de Usuarios"));
+            document.add(new com.lowagie.text.Paragraph(" ")); // blank line
+
+            com.lowagie.text.pdf.PdfPTable table = new com.lowagie.text.pdf.PdfPTable(5); // 5 columns
+
+            // Add table headers
+            table.addCell("ID");
+            table.addCell("Usuario");
+            table.addCell("Nombres");
+            table.addCell("Apellidos");
+            table.addCell("Rol");
+
+            // Add user data
+            for (UsuarioDto user : users) {
+                table.addCell(String.valueOf(user.id()));
+                table.addCell(user.userName());
+                table.addCell(user.firstName());
+                table.addCell(user.lastName());
+                table.addCell(user.userRole());
+            }
+
+            document.add(table);
+            document.close();
+        } catch (Exception e) {
+            throw new IOException("error al generarPDF", e);
+        }
+    }
+
+    private void exportToTXT(List<UsuarioDto> users, PrintWriter writer) throws IOException {
+        for (UsuarioDto user : users) {
+            writer.write("ID: " + user.id() + "\n");
+            writer.write("Usuario: " + user.userName() + "\n");
+            writer.write("Nombres: " + user.firstName() + "\n");
+            writer.write("Apellidos: " + user.lastName() + "\n");
+            writer.write("Rol: " + user.userRole() + "\n");
+            writer.write("----------------------------\n");
+        }
+    }
+
+    private void exportToJSON(List<UsuarioDto> users, PrintWriter writer) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        writer.write(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(users));
+    }
+
+    private void exportToCSV(List<UsuarioDto> users, PrintWriter writer) throws IOException {
+        StatefulBeanToCsv<UsuarioDto> beanToCsv = new StatefulBeanToCsvBuilder<UsuarioDto>(writer)
+                .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
+                .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
+                .withOrderedResults(false)
+                .build();
+        try {
+            beanToCsv.write(users);
+        } catch (Exception e) {
+            throw new IOException("Error exportando CSV", e);
+        }
+
+    }
+
     @GetMapping("/create")
     public String showCreateForm(Model model) {
         model.addAttribute("usuario", new UsuarioDetDto(null, "", "", "", "", ""));

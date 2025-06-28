@@ -11,6 +11,25 @@
 <div th:if="${error}">
   <p th:text="${error}" style="color:red;"></p>
 </div>
+<br/>
+<div>
+  <label for="exportFormat">Exportar como:</label>
+  <select id="exportFormat">
+    <option value="csv">CSV</option>
+    <option value="json">JSON</option>
+    <option value="txt">TXT</option>
+    <option value="pdf">PDF</option>
+  </select>
+
+  <button type="button" onclick="exportData()">Descargar</button>
+</div>
+
+<script>
+  function exportData() {
+    const format = document.getElementById("exportFormat").value;
+    window.location.href = `/manage/export?format=${format}`;
+  }
+</script>
 
 <table border="1">
   <thead>
@@ -25,6 +44,8 @@
   </thead>
   <tbody>
   <tr th:each="usuario : ${users}">
+    <td th:text="${usuario.id()}"></td>
+    <td th:text="${usuario.userName()}"></td>
     <td th:text="${usuario.firstName}"></td>
     <td th:text="${usuario.lastName}"></td>
     <td th:text="${usuario.userRole}"></td>

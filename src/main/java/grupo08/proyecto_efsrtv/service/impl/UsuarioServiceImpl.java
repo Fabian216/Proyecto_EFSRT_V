@@ -28,7 +28,9 @@ public class UsuarioServiceImpl implements IUsuarioService {
     public List<UsuarioDto> getAllUsers()  {
         List<UsuarioDto> users = new ArrayList<>();
         Iterable<Usuario> iterable = usuarioRepository.findAll();
-        iterable.forEach(user -> users.add(new UsuarioDto(user.getId(),
+        iterable.forEach(user -> users.add(new UsuarioDto(
+                user.getId(),
+                user.getUserName(),
                 user.getFirstName(),
                 user.getLastName(),
                 user.getUserRole())));
