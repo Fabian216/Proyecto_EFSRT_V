@@ -1,11 +1,53 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
     <title>Acceso Restringido</title>
+    <style>
+        body {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        .error-message {
+            color: red;
+        }
+        .success-message {
+            color: green;
+        }
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 600px;
+            margin-top: 50px;
+        }
+        h2 {
+            margin-bottom: 30px;
+        }
+
+        .form-label {
+            font-weight: bold;
+        }
+
+        .btn-primary, .btn-danger, .btn-success, .btn-dark,.btn-secondary,.btn-info{
+            margin-top: 15px;
+        }
+
+        table {
+            background-color: #ffffff;
+        }
+
+    </style>
 </head>
 <body>
-<h2>Acceso Denegado</h2>
-<p>No tienes permiso para acceder a esta página.</p>
-<a th:href="@{/manage/login}">Volver al login</a>
+<div class="container text-center">
+    <h2>Acceso Denegado</h2>
+    <p>No tienes permiso para acceder a esta página.</p>
+    <a th:href="@{/manage/login}" class="btn btn-primary">Volver al login</a>
+</div>
 </body>
 </html>

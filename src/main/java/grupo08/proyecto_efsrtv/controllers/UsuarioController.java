@@ -147,6 +147,8 @@ public class UsuarioController {
     }
 
     private void exportarATXT(List<UsuarioDto> users, PrintWriter writer) throws IOException {
+        writer.write("Lista de Usuarios\n");
+        writer.write("=================\n\n");
         for (UsuarioDto user : users) {
             writer.write("ID: " + user.id() + "\n");
             writer.write("Usuario: " + user.userName() + "\n");
@@ -163,6 +165,7 @@ public class UsuarioController {
     }
 
     private void exportACSV(List<UsuarioDto> users, PrintWriter writer) throws IOException {
+        writer.write(" Lista de Usuarios\n");
         StatefulBeanToCsv<UsuarioDto> beanToCsv = new StatefulBeanToCsvBuilder<UsuarioDto>(writer)
                 .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
                 .withSeparator(CSVWriter.DEFAULT_SEPARATOR)

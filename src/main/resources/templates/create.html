@@ -3,37 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <title>Crear Usuario</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        .error-message {
+            color: red;
+        }
+        .success-message {
+            color: green;
+        }
+    </style>
 </head>
 <body>
 
-<h2>Crear Nuevo Usuario</h2>
+<div class="container">
+    <h2>Crear Nuevo Usuario</h2>
 
-<form th:action="@{/manage/create}" method="post">
-    <input type="hidden" name="id" th:value="${usuario.id}" />
+    <form th:action="@{/manage/create}" method="post">
+        <input type="hidden" name="id" th:value="${usuario.id}" />
 
-    <label>Nombre de Usuario:</label>
-    <input type="text" name="userName" th:value="${usuario.userName}" required/><br/>
+        <div class="form-group">
+            <label>Nombre de Usuario:</label>
+            <input type="text" class="form-control" name="userName" th:value="${usuario.userName}" required/>
+        </div>
 
-    <label>Contraseña:</label>
-    <input type="password" name="passwordHash" th:value="${usuario.passwordHash}" required/><br/>
+        <div class="form-group">
+            <label>Contraseña:</label>
+            <input type="password" class="form-control" name="passwordHash" th:value="${usuario.passwordHash}" required/>
+        </div>
 
-    <label>Nombres:</label>
-    <input type="text" name="firstName" th:value="${usuario.firstName}" required/><br/>
+        <div class="form-group">
+            <label>Nombres:</label>
+            <input type="text" class="form-control" name="firstName" th:value="${usuario.firstName}" required/>
+        </div>
 
-    <label>Apellidos:</label>
-    <input type="text" name="lastName" th:value="${usuario.lastName}" required/><br/>
+        <div class="form-group">
+            <label>Apellidos:</label>
+            <input type="text" class="form-control" name="lastName" th:value="${usuario.lastName}" required/>
+        </div>
 
-    <label>Rol:</label>
-    <select name="userRole">
-        <option value="ADMIN" th:selected="${usuario.userRole == 'ADMIN'}">ADMIN</option>
-        <option value="OPERATOR" th:selected="${usuario.userRole == 'OPERATOR'}">OPERATOR</option>
-    </select><br/>
+        <div class="form-group">
+            <label>Rol:</label>
+            <select class="form-control" name="userRole">
+                <option value="ADMIN" th:selected="${usuario.userRole == 'ADMIN'}">ADMIN</option>
+                <option value="OPERATOR" th:selected="${usuario.userRole == 'OPERATOR'}">OPERATOR</option>
+            </select>
+        </div>
 
-    <button type="submit">Crear Usuario</button>
-</form>
+        <button type="submit" class="btn btn-primary">Crear Usuario</button>
+    </form>
 
-<br/>
-<a th:href="@{/manage/start}">Volver al listado</a>
+    <br/>
+    <a th:href="@{/manage/start}" class="btn btn-secondary">Volver al listado</a>
+</div>
 
 </body>
 </html>
