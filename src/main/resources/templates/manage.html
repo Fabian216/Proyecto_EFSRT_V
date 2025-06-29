@@ -22,7 +22,7 @@
       background-color: #f8f9fa;
     }
     .container {
-      max-width: 600px;
+      max-width: 1000px;
       margin-top: 50px;
     }
     h2 {
@@ -39,6 +39,8 @@
 
     table {
       background-color: #ffffff;
+      width: 100%;
+      table-layout: auto;
     }
 
   </style>
@@ -75,6 +77,8 @@
     <th>Nombres</th>
     <th>Apellidos</th>
     <th>Rol</th>
+    <th>Creado</th>
+    <th>Actualizado</th>
     <th>Acciones</th>
   </tr>
   </thead>
@@ -85,6 +89,8 @@
     <td th:text="${usuario.firstName}"></td>
     <td th:text="${usuario.lastName}"></td>
     <td th:text="${usuario.userRole}"></td>
+    <td th:text="${usuario.created()}"></td>
+    <td th:text="${usuario.updated()}"></td>
     <td>
       <a th:href="@{/manage/edit/{id}(id=${usuario.id})}" class="btn btn-success">Editar</a>
       |

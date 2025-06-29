@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -29,8 +30,9 @@ public class Usuario {
     @Column(name = "user_role")
     String userRole;
     @Column(name = "created")
-    Date created;
+    private LocalDateTime created;
+
     @Column(name = "updated")
-    Date updated ;
+    private LocalDateTime updated;
 
 }

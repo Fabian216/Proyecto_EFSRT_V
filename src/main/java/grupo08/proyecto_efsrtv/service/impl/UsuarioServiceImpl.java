@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -33,7 +34,10 @@ public class UsuarioServiceImpl implements IUsuarioService {
                 user.getUserName(),
                 user.getFirstName(),
                 user.getLastName(),
-                user.getUserRole())));
+                user.getUserRole(),
+                user.getCreated(),
+                user.getUpdated()
+        )));
         return users;
     }
 
@@ -67,8 +71,8 @@ public class UsuarioServiceImpl implements IUsuarioService {
         newUser.setFirstName(dto.firstName());
         newUser.setLastName(dto.lastName());
         newUser.setUserRole(dto.userRole());
-        newUser.setCreated(new Date());
-        newUser.setUpdated(new Date());
+        newUser.setCreated(LocalDateTime.now());
+        newUser.setUpdated(LocalDateTime.now());
 
         Usuario saved = usuarioRepository.save(newUser);
 
@@ -89,7 +93,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
         usuarioACambiar.setFirstName(dto.firstName());
         usuarioACambiar.setLastName(dto.lastName());
         usuarioACambiar.setUserRole(dto.userRole());
-        usuarioACambiar.setUpdated(new Date());
+        usuarioACambiar.setUpdated(LocalDateTime.now());
 
         usuarioRepository.save(usuarioACambiar);
         System.out.println("Usuario cambiado con exito:"+dto.userName());

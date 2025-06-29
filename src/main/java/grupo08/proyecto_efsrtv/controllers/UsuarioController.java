@@ -126,7 +126,7 @@ public class UsuarioController {
     }
 
     private static PdfPTable getPdfPTabla(List<UsuarioDto> users) {
-        PdfPTable table = new PdfPTable(5); // 5 columns
+        PdfPTable table = new PdfPTable(7); // 5 columns
 
         // Add table headers
         table.addCell("ID");
@@ -134,6 +134,9 @@ public class UsuarioController {
         table.addCell("Nombres");
         table.addCell("Apellidos");
         table.addCell("Rol");
+        table.addCell("Creado");
+        table.addCell("Actualizado");
+
 
         // Add user data
         for (UsuarioDto user : users) {
@@ -142,6 +145,8 @@ public class UsuarioController {
             table.addCell(user.firstName());
             table.addCell(user.lastName());
             table.addCell(user.userRole());
+            table.addCell(user.created().toString());
+            table.addCell(user.updated().toString());
         }
         return table;
     }
@@ -155,6 +160,8 @@ public class UsuarioController {
             writer.write("Nombres: " + user.firstName() + "\n");
             writer.write("Apellidos: " + user.lastName() + "\n");
             writer.write("Rol: " + user.userRole() + "\n");
+            writer.write("Creado: " + user.created() + "\n");
+            writer.write("Actualizado: " + user.updated() + "\n");
             writer.write("----------------------------\n");
         }
     }
